@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         EventAdapter eventAdapter = new EventAdapter(this, historicEvents);
         recyclerView.setAdapter(eventAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new CardAnimator());
     }
 
     private void fillModels(){
