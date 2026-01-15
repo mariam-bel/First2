@@ -55,24 +55,31 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyHolder> im
         holder.tvDate.setText(events.get(posicion).getEventDate());
         holder.tvLocation.setText(events.get(posicion).getEventLocation());
 
+        ViewGroup.LayoutParams params = holder.card.getLayoutParams();
+        if (tarjetaSeleccionada == posicion) {
+            params.height = 800;
+        }
+        holder.card.setLayoutParams(params);
+
         holder.card.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-//                int tarjetaAnterior = tarjetaSeleccionada;
-//                tarjetaSeleccionada = holder.getAbsoluteAdapterPosition();
-//
-//                if (tarjetaAnterior != RecyclerView.NO_POSITION) {
-//                    notifyItemChanged(tarjetaAnterior, PAYLOAD_SELECTED);
-//                }
-//                //NOTIFICA AL RECYCLERVIEW QUE EL ESTADO DE LA TARJETA HA CAMBIADO
-//                notifyItemChanged(tarjetaSeleccionada, PAYLOAD_SELECTED);
-                Animation animation = AnimationUtils.loadAnimation(v.getContext(), R.anim.agrandar);
-                v.startAnimation(animation);
-                ActivityOptions options  = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+                int tarjetaAnterior = tarjetaSeleccionada;
+                tarjetaSeleccionada = holder.getAbsoluteAdapterPosition();
+                if (tarjetaAnterior != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(tarjetaAnterior);
+                    tarjetaSeleccionada = posicion;
+                    notifyItemChanged(tarjetaSeleccionada);
+                }
+                //Animation animation = AnimationUtils.loadAnimation(v.getContext(), R.anim.agrandar);
+                //v.startAnimation(animation);
+                //ActivityOptions options  = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
 
-                Intent intent = new Intent(v.getContext(), Game.class);
-                context.startActivity(intent, options.toBundle());
+
+
+//                Intent intent = new Intent(v.getContext(), Game.class);
+//                context.startActivity(intent, options.toBundle());
 
             }
         });
