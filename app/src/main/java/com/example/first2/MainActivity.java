@@ -1,48 +1,36 @@
 package com.example.first2;
 
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<EventModel> historicEvents = new ArrayList<>();
+    private final ArrayList<EventModel> historicEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         RecyclerView recyclerView = findViewById(R.id.historicEventRecycler);
+
         fillModels();
 
-        EventAdapter eventAdapter = new EventAdapter(this, historicEvents);
-        recyclerView.setAdapter(eventAdapter);
+        EventAdapter adapter = new EventAdapter(this, historicEvents);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void fillModels(){
+    private void fillModels() {
         String[] eventNames = getResources().getStringArray(R.array.historic_event_names);
         String[] eventDates = getResources().getStringArray(R.array.historic_event_dates);
         String[] eventLocations = getResources().getStringArray(R.array.historic_event_locations);
 
-        for (int i=0; i< eventNames.length; i++) {
-            long seed = eventNames[i].hashCode();
-            historicEvents.add(new EventModel(eventNames[i], eventDates[i], eventLocations[i], seed));
+        for (int i = 0; i < eventNames.length; i++) {
+            historicEvents.add(new EventModel(eventNames[i], eventDates[i], eventLocations[i], i));
         }
     }
 }
