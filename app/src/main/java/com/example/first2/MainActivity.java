@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
         String[] eventLocations = getResources().getStringArray(R.array.historic_event_locations);
 
         for (int i=0; i< eventNames.length; i++) {
-            historicEvents.add(new EventModel(eventNames[i], eventDates[i], eventLocations[i]));
+            long seed = eventNames[i].hashCode();
+            historicEvents.add(new EventModel(eventNames[i], eventDates[i], eventLocations[i], seed));
         }
     }
 }

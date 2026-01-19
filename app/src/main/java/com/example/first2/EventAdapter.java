@@ -1,19 +1,13 @@
 package com.example.first2;
 
-import static android.view.View.TEXT_ALIGNMENT_CENTER;
-import static android.view.View.TEXT_ALIGNMENT_TEXT_END;
-
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,51 +49,48 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyHolder> im
 
 
     @Override
-    public void onBindViewHolder(@NonNull EventAdapter.MyHolder holder, int posicion) {
-        holder.tvTitle.setText(events.get(posicion).getEventName());
-        holder.tvDate.setText(events.get(posicion).getEventDate());
-        holder.tvLocation.setText(events.get(posicion).getEventLocation());
+    public void onBindViewHolder(@NonNull MyHolder holder, int position) {
 
+        EventModel event = events.get(position);
+        holder.card.setBackgroundColor(Color.WHITE);
 
-        ViewGroup.LayoutParams params = holder.card.getLayoutParams();
-        boolean esSeleccionada = (tarjetaSeleccionada == posicion);
-        params.height = (esSeleccionada ? 800 : 200);
-        holder.card.setLayoutParams(params);
+        holder.tvTitle.setText(event.getEventName());
+        holder.tvDate.setText(event.getEventDate());
+        holder.tvLocation.setText(event.getEventLocation());
 
-        if (esSeleccionada) {
-            holder.contenidoAdd.removeAllViews();
-            TextView textView = new TextView(holder.itemView.getContext());
-            textView.setText(events.get(posicion).getEventName());
-            textView.setTextSize(20);
-            textView.setTextColor(Color.BLACK);
-            textView.setPadding(100,100,16,16);
+        boolean seleccionada = (tarjetaSeleccionada == position);
+        holder.extraContent.setVisibility(seleccionada ? View.VISIBLE : View.GONE);
 
-            holder.contenidoAdd.addView(textView);
+        if (seleccionada) {
+            holder.extraContent.removeAllViews();
+
+            TextView titulo = new TextView(context);
+            titulo.setText("Fechas disponibles");
+            titulo.setTextSize(16);
+            holder.extraContent.addView(titulo);
+
+            RadioGroup rg = new RadioGroup(context);
+
+            for (String fecha : event.getFechasOpciones()) {
+                RadioButton rb = new RadioButton(context);
+                rb.setText(fecha);
+                rg.addView(rb);
+            }
+
+            holder.extraContent.addView(rg);
         }
 
-        holder.card.setOnClickListener(new View.OnClickListener() {
+        holder.card.setOnClickListener(v -> {
+            int anterior = tarjetaSeleccionada;
+            tarjetaSeleccionada = seleccionada ? RecyclerView.NO_POSITION : position;
 
-            @Override
-            public void onClick(View v) {
-
-                int ultima = tarjetaSeleccionada;
-                tarjetaSeleccionada = esSeleccionada ? -1 : posicion;
-
-                notifyItemChanged(ultima);
-                notifyItemChanged(posicion);
-
-                //Animation animation = AnimationUtils.loadAnimation(v.getContext(), R.anim.agrandar);
-                //v.startAnimation(animation);
-                //ActivityOptions options  = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
-
-
-
-//                Intent intent = new Intent(v.getContext(), Game.class);
-//                context.startActivity(intent, options.toBundle());
-
+            if (anterior != RecyclerView.NO_POSITION) {
+                notifyItemChanged(anterior);
             }
+            notifyItemChanged(position);
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -111,21 +102,21 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyHolder> im
 
     }
 
-    public static class MyHolder extends RecyclerView.ViewHolder {
+    static class MyHolder extends RecyclerView.ViewHolder {
         CardView card;
-
-        LinearLayout contenidoAdd;
-
         TextView tvTitle, tvDate, tvLocation;
-        public MyHolder(@NonNull View itemView) {
+        LinearLayout extraContent;
+
+        MyHolder(View itemView) {
             super(itemView);
+            card = itemView.findViewById(R.id.cardView);
             tvTitle = itemView.findViewById(R.id.titleEvent);
             tvDate = itemView.findViewById(R.id.dateEvent);
             tvLocation = itemView.findViewById(R.id.locationEvent);
-            card = itemView.findViewById(R.id.cardView);
-            contenidoAdd = itemView.findViewById(R.id.cardContent);
-
+            extraContent = itemView.findViewById(R.id.extraContent);
         }
     }
+
+
 
 }
