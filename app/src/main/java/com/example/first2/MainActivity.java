@@ -1,12 +1,18 @@
 package com.example.first2;
 
+import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ActivityResultLauncher<Intent> gameLauncher;
 
     private final ArrayList<EventModel> historicEvents = new ArrayList<>();
 
@@ -22,6 +28,18 @@ public class MainActivity extends AppCompatActivity {
         EventAdapter adapter = new EventAdapter(this, historicEvents);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        gameLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        int pos = result.getData().getIntExtra("POSITION", -1);
+                        if (pos != -1) {
+                            adapter.eliminarTarjeta(pos);
+                        }
+                    }
+                }
+        );
     }
 
     private void fillModels() {

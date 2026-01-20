@@ -50,6 +50,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyHolder> {
         return events.size();
     }
 
+    public void eliminarTarjeta(int position) {
+        if (position!=RecyclerView.NO_POSITION){
+            events.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position,events.size());
+        }
+    }
+
     public static class MyHolder extends RecyclerView.ViewHolder {
         CardView card;
         androidx.appcompat.widget.AppCompatTextView tvTitle, tvDate, tvLocation;

@@ -1,5 +1,6 @@
 package com.example.first2;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.LinearLayout;
@@ -71,13 +72,19 @@ public class Game extends AppCompatActivity {
 
             boolean correcta = event.esCorrecta();
 
+            int position = getIntent().getIntExtra("POSITION", -1);
+
             if (correcta) {
+                Intent data = new Intent();
+                data.putExtra("POSITION", position);
+                setResult(RESULT_OK, data);
+                finish();
                 card.setCardBackgroundColor(Color.parseColor("#C8E6C9"));
             } else {
                 card.setCardBackgroundColor(Color.parseColor("#FFCDD2"));
             }
 
-            Toast.makeText(this, correcta ? "Correcto" : "Incorrecto", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, correcta ? "Muy bien mutherfucker" : "Más tonto y no naces", Toast.LENGTH_SHORT).show();
 
             for (int i=0; i<rg.getChildCount(); i++){
                 rg.getChildAt(i).setEnabled(false);
